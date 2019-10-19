@@ -1,4 +1,4 @@
-# gif-generator
+# gif-picker
 
 ## Project setup
 ```

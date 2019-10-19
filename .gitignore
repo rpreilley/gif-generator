@@ -2,6 +2,9 @@
 node_modules
 /dist
 
+# constants file
+src/constants.js
+
 # local env files
 .env.local
 .env.*.local
