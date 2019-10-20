@@ -1,9 +1,8 @@
 <template>
-  <div v-if="loading">
-    Loading...
-  </div>
-  <div v-else class="home">
-    <h1>
+  <div class="container">
+    <!-- Snackbar -->
+    <div id="snackbar">Copied Gif to Keyboard</div>
+    <h1 class="title">
       Gif Picker
     </h1>
     <div>
@@ -20,19 +19,21 @@
           <button type="button" @click="copyGiphyLink">Copy Link</button>
         </div>
       </div> -->
-      <p>Searched Gifs</p>
-      <!-- <form @submit.prevent="searchGiffy">
-        <input v-model="searchText" class="uk-input" type="text" @input="searchGiffy">
+      <p class="description">To find some gifs, start typing in what you'd like to find.</p>
+      <!-- <form @submit.prevent="searchGIPHY">
+        <input v-model="searchText" class="uk-input" type="text" @input="searchGIPHY">
       </form> -->
       <input v-model="searchText" class="uk-input" type="text" @input="debouncedGiphySearch()">
     </div>
-    <div v-for="(gif, index) in searchedGifs" :key="index">
-      <video autoplay loop>
-        <source :src="gif.images.original_mp4.mp4" alt="Giphy Image" type="video/mp4">
-      </video>
-      <div>
-        <input type="hidden" :id="`search-text${index}`" :value="gif.images.original_mp4.mp4">
-        <button type="button" @click="copyGiphyLink(index)">Copy Link</button>
+    <div class="container gif-container">
+      <div v-for="(gif, index) in searchedGifs" :key="index" class="gif-item">
+        <video autoplay loop height=250 width="auto">
+          <source :src="gif.images.original_mp4.mp4" alt="Giphy Image" type="video/mp4">
+        </video>
+        <div>
+          <input type="hidden" :id="`search-text${index}`" :value="gif.images.original_mp4.mp4">
+          <button type="button" @click="copyGiphyLink(index)">Copy Gif</button>
+        </div>
       </div>
     </div>
   </div>
@@ -49,10 +50,9 @@ export default {
   data() {
     return {
       searchText: '',
-      key: CONSTANTS.API_KEY.GIFFY,
+      key: CONSTANTS.API_KEY.GIPHY,
       searchedGifs: [],
-      randomGifs: [],
-      loading: false
+      randomGifs: []
     };
   },
   components: {
@@ -63,16 +63,18 @@ export default {
   },
   methods: {
     // Debounce function so it isn't called immediately after every keypress
-    debouncedGiphySearch: _.debounce(function () { this.searchGiphy(); }, 750),
+    debouncedGiphySearch: _.debounce(function () {
+      this.searchGiphy();
+    }, 750),
     async searchGiphy() {
       // Clear searchedGifs array if there are any before searching again
       if (this.searchedGifs.length > 0) {
         this.searchedGifs = [];
       }
 
-      const url = ENDPOINTS.GIFFY.SEARCH;
+      const url = ENDPOINTS.GIPHY.SEARCH;
 
-      // Construct query and encode query parameters in the process
+      // Construct query and encode query parameters
       const query = `${url}?q=${encodeURIComponent(this.searchText)}&api_key=${this.key}&limit=20`;
 
       return ApiService.get(query)
@@ -102,7 +104,7 @@ export default {
         this.randomGifs = [];
       }
 
-      const url = ENDPOINTS.GIFFY.RANDOM;
+      const url = ENDPOINTS.GIPHY.RANDOM;
       const query = `${url}?api_key=${this.key}&limit=20`;
 
       await ApiService.get(query)
@@ -132,9 +134,23 @@ export default {
         const successful = document.execCommand('copy');
         const msg = successful ? 'successful' : 'unsuccessful';
         console.log(`Testing code was copied ${msg}`);
+
         // Notify user giphy link has been copied
-      } catch (err) {
-        console.log('Oops, unable to copy');
+
+        // Get the snackbar DIV
+        const x = document.getElementById('snackbar');
+
+        if (x.className === 'show') {
+          // Do nothing
+        } else {
+          // Add the "show" class to DIV
+          x.className = 'show';
+
+          // After 3 seconds, remove the show class from DIV
+          setTimeout(() => { x.className = x.className.replace('show', ''); }, 3000);
+        }
+      } catch (error) {
+        console.log(error);
       }
 
       /* unselect the range */
