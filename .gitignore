@@ -3,7 +3,7 @@ node_modules
 /dist
 
 # constants file
-src/constants.js
+src/constants/apiKeys.js
 
 # local env files
 .env.local
