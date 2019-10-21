@@ -6,35 +6,13 @@
       Gif Picker
     </h1>
     <div>
-      <!-- <p>Random Gifs</p>
-      <div v-for="(gif, index) in randomGifs" :key="index">
-        <video autoplay loop>
-          <source
-            :src="gif.images.original_mp4.mp4"
-            alt="Giphy Image" type="video/mp4"
-            id="random-text"
-          >
-        </video>
-        <div>
-          <button type="button" @click="copyGiphyLink">Copy Link</button>
-        </div>
-      </div> -->
+      <p>Random Gifs</p>
+      <Gif :gifs="randomGifs"/>
       <p class="description">To find some gifs, start typing in what you'd like to find.</p>
-      <!-- <form @submit.prevent="searchGIPHY">
-        <input v-model="searchText" class="uk-input" type="text" @input="searchGIPHY">
-      </form> -->
       <input v-model="searchText" class="uk-input" type="text" @input="debouncedGiphySearch()">
     </div>
-    <div class="container gif-container">
-      <div v-for="(gif, index) in searchedGifs" :key="index" class="gif-item">
-        <video autoplay loop height=250 width="auto">
-          <source :src="gif.images.original_mp4.mp4" alt="Giphy Image" type="video/mp4">
-        </video>
-        <div>
-          <input type="hidden" :id="`search-text${index}`" :value="gif.images.original_mp4.mp4">
-          <button type="button" @click="copyGiphyLink(index)">Copy Gif</button>
-        </div>
-      </div>
+    <div class="gif-container">
+      <Gif :gifs="searchedGifs"/>
     </div>
   </div>
 </template>
@@ -44,6 +22,7 @@ import _ from 'lodash';
 import CONSTANTS from '../constants/apiKeys';
 import ENDPOINTS from '../constants/endpoints';
 import ApiService from '../services/ApiService';
+import Gif from '../components/Gif.vue';
 
 export default {
   name: 'home',
@@ -52,17 +31,18 @@ export default {
       searchText: '',
       key: CONSTANTS.API_KEY.GIPHY,
       searchedGifs: [],
-      randomGifs: []
+      randomGifs: [],
+      loading: false
     };
   },
   components: {
-
+    Gif
   },
   mounted() {
-    // this.getRandomGifs();
+    this.getRandomGifs();
   },
   methods: {
-    // Debounce function so it isn't called immediately after every keypress
+    // Debounce function so searchGiphy isn't called immediately after every keypress
     debouncedGiphySearch: _.debounce(function () {
       this.searchGiphy();
     }, 750),
@@ -124,38 +104,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    },
-    copyGiphyLink(id) {
-      const linkToCopy = document.querySelector(`#search-text${id}`);
-      linkToCopy.setAttribute('type', 'text');
-      linkToCopy.select();
-
-      try {
-        const successful = document.execCommand('copy');
-        const msg = successful ? 'successful' : 'unsuccessful';
-        console.log(`Testing code was copied ${msg}`);
-
-        // Notify user giphy link has been copied
-
-        // Get the snackbar DIV
-        const x = document.getElementById('snackbar');
-
-        if (x.className === 'show') {
-          // Do nothing
-        } else {
-          // Add the "show" class to DIV
-          x.className = 'show';
-
-          // After 3 seconds, remove the show class from DIV
-          setTimeout(() => { x.className = x.className.replace('show', ''); }, 3000);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-
-      /* unselect the range */
-      linkToCopy.setAttribute('type', 'hidden');
-      window.getSelection().removeAllRanges();
     }
   }
 };

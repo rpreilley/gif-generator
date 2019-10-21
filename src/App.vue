@@ -20,16 +20,14 @@
   }
 
   .gif-container {
-    padding: 24px;
     display: flex;
     flex-wrap: wrap;
   }
 
-  .gif-item {
-    height: 300px;
-    width: auto;
-    margin: 5px;
-  }
+  // .gif-item {
+  //   height: 300px;
+  //   width: auto;
+  // }
 
   .title {
     margin-top: 0;
