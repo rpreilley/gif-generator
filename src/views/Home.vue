@@ -1,18 +1,22 @@
 <template>
-  <div class="container">
+  <div id="main">
     <!-- Snackbar -->
     <div id="snackbar">Copied Gif to Keyboard</div>
     <h1 class="title">
       Gif Picker
     </h1>
     <div>
-      <p>Random Gifs</p>
-      <Gif :gifs="randomGifs"/>
-      <p class="description">To find some gifs, start typing in what you'd like to find.</p>
-      <input v-model="searchText" class="uk-input" type="text" @input="debouncedGiphySearch()">
+      <Carousel :gifs="randomGifs"/>
+      <div class="description-wrapper">
+        <p class="description">Choose one of our pre-selected gifs above, or start typing below to begin your search.</p>
+        <p class="description">Click <a href="" @click.prevent="getMoreRandomGifs()">here</a> to get 3 new random gifs.</p>
+        <br>
+        <p class="description">Click a gif to copy it for re-use in your favorite chat room.</p>
+        <input v-model="searchText" placeholder="Search for a gif..." id="inp" class="input" type="text" @input="debouncedGiphySearch()" autofocus>
+      </div>
     </div>
-    <div class="gif-container">
-      <Gif :gifs="searchedGifs"/>
+    <div>
+      <Carousel :gifs="searchedGifs"/>
     </div>
   </div>
 </template>
@@ -22,7 +26,7 @@ import _ from 'lodash';
 import CONSTANTS from '../constants/apiKeys';
 import ENDPOINTS from '../constants/endpoints';
 import ApiService from '../services/ApiService';
-import Gif from '../components/Gif.vue';
+import Carousel from '../components/Carousel.vue';
 
 export default {
   name: 'home',
@@ -32,11 +36,13 @@ export default {
       key: CONSTANTS.API_KEY.GIPHY,
       searchedGifs: [],
       randomGifs: [],
-      loading: false
+      loading: false,
+      giphyLimit: '30',
+      count: 0
     };
   },
   components: {
-    Gif
+    Carousel
   },
   mounted() {
     this.getRandomGifs();
@@ -53,9 +59,10 @@ export default {
       }
 
       const url = ENDPOINTS.GIPHY.SEARCH;
+      const limit = parseInt(this.giphyLimit, 10);
 
       // Construct query and encode query parameters
-      const query = `${url}?q=${encodeURIComponent(this.searchText)}&api_key=${this.key}&limit=20`;
+      const query = `${url}?q=${encodeURIComponent(this.searchText)}&api_key=${this.key}&limit=${limit}`;
 
       return ApiService.get(query)
         .then((response) => {
@@ -79,11 +86,6 @@ export default {
         });
     },
     async getRandomGifs() {
-      // Clear randomGifs array if there are any before searching again
-      if (this.randomGifs.length > 0) {
-        this.randomGifs = [];
-      }
-
       const url = ENDPOINTS.GIPHY.RANDOM;
       const query = `${url}?api_key=${this.key}&limit=20`;
 
@@ -93,8 +95,15 @@ export default {
             const item = response.data.data;
 
             // Push items containing an mp4 format option to a randomGifs array
-            if (item.images && item.images.original_mp4) {
+            if (item.images && item.images.original_mp4 && this.count < 3) {
               this.randomGifs.push(item);
+
+              // Recursively call itself until count is equal to 3
+              this.count += 1;
+              this.getRandomGifs();
+            } else {
+              // Reset count
+              this.count = 0;
             }
           } else {
             console.log(response);
@@ -104,6 +113,11 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+    getMoreRandomGifs() {
+      // Reset count and re-call random gif function
+      this.getRandomGifs();
+      this.count = 0;
     }
   }
 };
