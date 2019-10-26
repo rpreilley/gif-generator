@@ -9,9 +9,8 @@
       <Carousel :gifs="randomGifs"/>
       <div class="description-wrapper">
         <p class="description">Choose one of our pre-selected gifs above, or start typing below to begin your search.</p>
-        <p class="description">Click <a href="" @click.prevent="getMoreRandomGifs()">here</a> to get 3 new random gifs.</p>
         <br>
-        <p class="description">Click a gif to copy it for re-use in your favorite chat room.</p>
+        <p class="description">Click <a href="" @click.prevent="getMoreRandomGifs()">here</a> to get 3 new random gifs, or click a gif to copy it for re-use in your favorite chat room.</p>
         <input v-model="searchText" placeholder="Search for a gif..." id="inp" class="input" type="text" @input="debouncedGiphySearch()" autofocus>
       </div>
     </div>

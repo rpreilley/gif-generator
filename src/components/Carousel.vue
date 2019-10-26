@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       currentOffset: 0,
-      windowSize: 0,
+      windowSize: 3,
       paginationFactor: 220
     };
   },
@@ -45,6 +45,14 @@ export default {
     },
     gifsLength() {
       return (this.gifs.length > 3);
+    }
+  },
+  watch: {
+    // If there is any change to the search that causes this component to update, refresh the data object values
+    gifs() {
+      this.currentOffset = 0;
+      this.windowSize = 3;
+      this.paginationFactor = 220;
     }
   },
   methods: {
