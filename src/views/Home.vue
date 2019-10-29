@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="blur-message">Please use landscape for best results on a tablet or mobile device</div>
     <div id="main">
       <div id="snackbar"></div>
       <h1 class="title">
@@ -37,7 +36,6 @@ export default {
       key: CONSTANTS.API_KEY.GIPHY,
       searchedGifs: [],
       randomGifs: [],
-      loading: false,
       giphyLimit: '30',
       count: 0
     };

@@ -70,9 +70,7 @@ export default {
       linkToCopy.select();
 
       try {
-        const successful = document.execCommand('copy');
-        const msg = successful ? 'successful' : 'unsuccessful';
-        console.log(`Testing code was copied ${msg}`);
+        document.execCommand('copy');
 
         // Get the snackbar DIV and notify user giphy link has been copied
         const x = document.getElementById('snackbar');
