@@ -1,7 +1,6 @@
 <template>
   <div id="main">
-    <!-- Snackbar -->
-    <div id="snackbar">Copied Gif to Keyboard</div>
+    <div id="snackbar"></div>
     <h1 class="title">
       Gif Picker
     </h1>
@@ -11,7 +10,7 @@
         <p class="description">Choose one of our pre-selected gifs above, or start typing below to begin your search.</p>
         <br>
         <p class="description">Click <a href="" @click.prevent="getMoreRandomGifs()">here</a> to get 3 new random gifs, or click a gif to copy it for re-use in your favorite chat room.</p>
-        <input v-model="searchText" placeholder="Search for a gif..." id="inp" class="input" type="text" @input="debouncedGiphySearch()" autofocus>
+        <input v-model="searchText" placeholder="Search for a gif..." type="text" @input="debouncedGiphySearch()" autofocus>
       </div>
     </div>
     <div>
@@ -47,6 +46,9 @@ export default {
     this.getRandomGifs();
   },
   methods: {
+    displaySnackbar() {
+      debugger;
+    },
     // Debounce function so searchGiphy isn't called immediately after every keypress
     debouncedGiphySearch: _.debounce(function () {
       this.searchGiphy();
@@ -75,9 +77,22 @@ export default {
                 this.searchedGifs.push(item);
               }
             }
+          } else if (response.status === 429) {
+            // Get the snackbar DIV and alert the user the search limit has been reached
+            const x = document.getElementById('snackbar');
+            x.innerHtml = 'You have reached the search limit. Please try again in one hour.';
+
+            if (x.className === 'show') {
+              // Do nothing
+            } else {
+              // Add the "show" class to DIV
+              x.className = 'show';
+
+              // After 3 seconds, remove the show class from DIV
+              setTimeout(() => { x.className = x.className.replace('show', ''); }, 3000);
+            }
           } else {
             console.log(response);
-            debugger;
           }
         })
         .catch((error) => {
@@ -104,9 +119,11 @@ export default {
               // Reset count
               this.count = 0;
             }
+          } else if (response.status === 429) {
+            // 429 status is Giphy APIs Too Many Requests http response code
+
           } else {
             console.log(response);
-            debugger;
           }
         })
         .catch((error) => {
@@ -115,8 +132,9 @@ export default {
     },
     getMoreRandomGifs() {
       // Reset count and re-call random gif function
-      this.getRandomGifs();
       this.count = 0;
+      this.randomGifs = [];
+      this.getRandomGifs();
     }
   }
 };

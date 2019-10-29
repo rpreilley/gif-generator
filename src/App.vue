@@ -6,6 +6,7 @@
 
 <script>
 import './assets/main.scss';
+import './assets/responsive.scss';
 
 export default {
 
