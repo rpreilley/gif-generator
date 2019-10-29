@@ -6,7 +6,7 @@
         <div class="card-carousel-cards" :style="{ transform: 'translateX' + '(' + currentOffset + 'px' + ')'}">
           <div class="card-carousel--card" v-for="(gif, index) in gifs" :key="index">
             <a @click.prevent="copyGiphyLink(gif.id)">
-              <video autoplay loop class="gif-item">
+              <video autoplay muted loop class="gif-item">
                 <source :src="gif.images.original_mp4.mp4" alt="Giphy Image" type="video/mp4">
               </video>
             </a>
@@ -76,7 +76,7 @@ export default {
 
         // Get the snackbar DIV and notify user giphy link has been copied
         const x = document.getElementById('snackbar');
-        x.innerHTML = 'Copied Gif to Keybsssoard';
+        x.innerHTML = 'Copied Gif to Keyboard';
         if (x.className === 'show') {
           // Do nothing
         } else {

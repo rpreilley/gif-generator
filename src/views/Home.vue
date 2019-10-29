@@ -1,20 +1,23 @@
 <template>
-  <div id="main">
-    <div id="snackbar"></div>
-    <h1 class="title">
-      Gif Picker
-    </h1>
-    <div>
-      <Carousel :gifs="randomGifs"/>
-      <div class="description-wrapper">
-        <p class="description">Choose one of our pre-selected gifs above, or start typing below to begin your search.</p>
-        <br>
-        <p class="description">Click <a href="" @click.prevent="getMoreRandomGifs()">here</a> to get 3 new random gifs, or click a gif to copy it for re-use in your favorite chat room.</p>
-        <input v-model="searchText" placeholder="Search for a gif..." type="text" @input="debouncedGiphySearch()" autofocus>
+  <div>
+    <div class="blur-message">Please use landscape for best results on a tablet or mobile device</div>
+    <div id="main">
+      <div id="snackbar"></div>
+      <h1 class="title">
+        Gif Picker
+      </h1>
+      <div>
+        <Carousel :gifs="randomGifs"/>
+        <div class="description-wrapper">
+          <p class="description">Choose one of our pre-selected gifs above, or start typing below to begin your search.</p>
+          <br>
+          <p class="description">Click <a href="" @click.prevent="getMoreRandomGifs()">here</a> to get 3 new random gifs, or click a gif to copy it for re-use in your favorite chat room.</p>
+          <input v-model="searchText" placeholder="Search for a gif..." type="text" @input="debouncedGiphySearch()" autofocus>
+        </div>
       </div>
-    </div>
-    <div>
-      <Carousel :gifs="searchedGifs"/>
+      <div>
+        <Carousel :gifs="searchedGifs"/>
+      </div>
     </div>
   </div>
 </template>
@@ -46,9 +49,6 @@ export default {
     this.getRandomGifs();
   },
   methods: {
-    displaySnackbar() {
-      debugger;
-    },
     // Debounce function so searchGiphy isn't called immediately after every keypress
     debouncedGiphySearch: _.debounce(function () {
       this.searchGiphy();
@@ -91,8 +91,6 @@ export default {
               // After 3 seconds, remove the show class from DIV
               setTimeout(() => { x.className = x.className.replace('show', ''); }, 3000);
             }
-          } else {
-            console.log(response);
           }
         })
         .catch((error) => {

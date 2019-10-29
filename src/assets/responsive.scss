@@ -3,7 +3,9 @@ $secondary-color: #2196f3;
 
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
-
+  .gif-item {
+    height: 100px;
+  }
 }
 
 /* iPads (portrait and landscape) ----------- */
@@ -13,17 +15,8 @@ $secondary-color: #2196f3;
   }
 }
 
-
-
-
-
 /* iPads (landscape) ----------- */
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
-  /* Styles */
-}
-
-/* iPads (portrait) ----------- */
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
   /* Styles */
 }
 
@@ -32,7 +25,18 @@ $secondary-color: #2196f3;
   /* Styles */
 }
 
-/* Smartphones (portrait) ----------- */
-@media only screen and (max-width : 320px) {
-  /* Styles */
+/* Smartphones and Ipads (portrait) ----------- */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait),
+only screen and (max-width : 480px) {
+  #main {
+    filter: blur(1rem);
+  }
+  .blur-message {
+    display: flex;
+    color: $white;
+    font-size: 1.5rem;
+    margin: auto;
+    width: 75%;
+  }
+    
 }
